@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Receptionist — Akash Nagar</title>
+<meta name="description" content="AI Receptionist: a real-time conversational AI experience by Akash Nagar.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23000'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23fff'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#fff; --fg:#000; --muted:#5c5c5c; --line:#e3e3e3;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--fg);outline-offset:3px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+
+/* Header */
+header{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;flex-wrap:wrap}
+.brand{font-weight:800;letter-spacing:.08em;text-decoration:none}
+.brand small{display:block;font-weight:500;font-size:.64rem;letter-spacing:.14em;color:var(--muted)}
+nav{display:flex;gap:20px}
+nav a{font-size:.9rem;text-decoration:none;padding:6px 0;border-bottom:2px solid transparent;transition:border-color .2s}
+nav a:hover{border-color:var(--fg)}
+
+/* Hero */
+.hero{padding:96px 0 56px}
+.label{font-size:.75rem;letter-spacing:.16em;color:var(--muted);margin:0 0 28px}
+h1{font-family:var(--serif);font-weight:700;font-size:clamp(2.6rem,8.5vw,6.5rem);line-height:1;letter-spacing:-.03em;margin:0 0 28px;max-width:11em}
+.intro{font-size:clamp(1.05rem,2.2vw,1.3rem);color:var(--muted);max-width:36em;margin:0 0 36px}
+.btn{font:inherit;font-weight:600;font-size:.95rem;cursor:pointer;border:2px solid var(--fg);background:var(--fg);color:var(--bg);padding:13px 26px;border-radius:999px;text-decoration:none;display:inline-block;transition:background .2s,color .2s}
+.btn:hover:not(:disabled){background:var(--bg);color:var(--fg)}
+
+/* Player */
+.stage{background:#000;color:#fff;padding:64px 0 72px}
+.stage h2{font-family:var(--serif);font-size:clamp(1.6rem,4vw,2.4rem);margin:0 0 28px;letter-spacing:-.01em}
+.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.tab{font:inherit;font-size:.92rem;font-weight:600;color:#fff;background:transparent;border:1.5px solid #555;border-radius:999px;padding:10px 20px;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.tab:hover{border-color:#fff}
+.tab[aria-pressed="true"]{background:#fff;color:#000;border-color:#fff}
+.stage :focus-visible{outline-color:#fff}
+.player{position:relative;aspect-ratio:16/9;background:#000;border:1px solid #3a3a3a;border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(255,255,255,.07)}
+video{width:100%;height:100%;display:block;background:#000;object-fit:contain}
+.overlay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;background:rgba(0,0,0,.86)}
+.overlay.show{display:flex}
+.overlay.loading{background:rgba(0,0,0,.5);pointer-events:none}
+.overlay p{margin:0;max-width:30em;font-size:.95rem}
+.overlay code{background:#222;padding:2px 6px;border-radius:4px;word-break:break-all}
+.spinner{width:34px;height:34px;border:3px solid #444;border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.meta{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:20px}
+.now{margin:0;font-size:1.05rem}
+.now span{color:#9a9a9a;font-size:.8rem;display:block}
+.actions{display:flex;gap:10px}
+.stage .btn{background:#fff;color:#000;border-color:#fff;padding:10px 22px}
+.stage .btn:hover:not(:disabled){background:#000;color:#fff}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+
+/* Sections */
+section.block{padding:88px 0}
+.grid{display:grid;grid-template-columns:1fr 1.6fr;gap:48px}
+h2.h{font-family:var(--serif);font-size:clamp(1.8rem,4vw,2.6rem);line-height:1.1;margin:0;letter-spacing:-.02em}
+.prose p{margin:0 0 1.1em;font-size:1.1rem;max-width:38em}
+.tags{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
+.tags li{border:1.5px solid var(--fg);border-radius:999px;padding:8px 18px;font-weight:600;font-size:.95rem;transition:background .2s,color .2s}
+.tags li:hover{background:var(--fg);color:var(--bg)}
+.stack{border-top:1px solid var(--line)}
+footer{border-top:1px solid var(--line);padding:36px 0;font-size:.88rem;color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@media(max-width:760px){
+  .hero{padding:56px 0 40px}
+  .grid{grid-template-columns:1fr;gap:20px}
+  section.block{padding:56px 0}
+  .stage{padding:44px 0 52px}
+  .player{border-radius:14px}
+  nav{gap:16px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none!important}
+  .spinner{animation-duration:2s}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="#top">AKASH NAGAR<small>AI PROJECT SHOWCASE</small></a>
+    <nav aria-label="Primary">
+      <a href="#demo">Demo</a>
+      <a href="#about">About</a>
+      <a href="#stack">Stack</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <p class="label">AI ENGINEERING · GENERATIVE AI · AGENTIC SYSTEMS</p>
+      <h1>AI that makes every conversation count.</h1>
+      <p class="intro">Meet my AI Receptionist — a real-time conversational AI experience designed to make digital interactions more natural, responsive, and useful.</p>
+      <a class="btn" href="#demo">Watch the Demo</a>
+    </div>
+  </section>
+
+  <section class="stage" id="demo" aria-labelledby="demo-title">
+    <div class="wrap">
+      <h2 id="demo-title">See it in action</h2>
+      <div class="tabs" id="tabs" role="group" aria-label="Choose a video"></div>
+
+      <div class="player">
+        <video id="video" controls playsinline preload="metadata" aria-label="AI Receptionist video"></video>
+        <div class="overlay loading" id="loading" role="status"><div class="spinner" aria-hidden="true"></div><span style="position:absolute;width:1px;height:1px;overflow:hidden">Loading video</span></div>
+        <div class="overlay" id="error" role="alert"><p id="error-text"></p></div>
+      </div>
+
+      <div class="meta">
+        <p class="now" aria-live="polite"><span>Now showing</span><strong id="now-title"></strong></p>
+        <div class="actions">
+          <button class="btn" id="replay" type="button">Replay</button>
+          <button class="btn" id="next" type="button">Next Video</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="about">
+    <div class="wrap grid">
+      <h2 class="h">About the project</h2>
+      <div class="prose">
+        <p>My AI Receptionist project explores real-time voice interaction through a modern browser-based experience, connecting a responsive web interface with backend services for conversational AI.</p>
+        <p>The videos above present the project.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block stack" id="stack">
+    <div class="wrap grid">
+      <h2 class="h">Technology stack</h2>
+      <!-- EDIT: keep only technologies you actually used. -->
+      <ul class="tags">
+        <li>Python</li>
+        <li>FastAPI</li>
+        <li>React</li>
+        <li>Pipecat</li>
+        <li>Real-time AI</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Built by Akash Nagar</span>
+    <!-- Optional: add <a href="YOUR_REPO_URL">GitHub</a> here once you have the correct URL. -->
+    <span>© 2026 Akash Nagar</span>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   EDIT HERE: video titles and file paths (relative paths only).
+   Add, remove or reorder entries as needed; everything else adapts.
+   ============================================================ */
+const VIDEOS = [
+  { label: "Video 1 — Introduction", src: "videos/ai-receptionist-1.mp4" },
+  { label: "Video 2 — Product Demo", src: "videos/ai-receptionist-2.mp4" },
+  { label: "Video 3 — Walkthrough", src: "videos/ai-receptionist-3.mp4" }
+];
+/* ============================================================ */
+
+(() => {
+  const $ = id => document.getElementById(id);
+  const video = $("video"), tabsEl = $("tabs"), nowTitle = $("now-title");
+  const loading = $("loading"), errBox = $("error"), errText = $("error-text");
+  const replayBtn = $("replay"), nextBtn = $("next");
+  let current = 0;
+
+  // Build selector buttons
+  const tabs = VIDEOS.map((v, i) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "tab"; b.textContent = v.label;
+    b.addEventListener("click", () => select(i, true));
+    tabsEl.appendChild(b);
+    return b;
+  });
+
+  const tryPlay = () => {
+    const p = video.play();
+    if (p && p.catch) p.catch(() => {}); // blocked by browser rules: visitor can press play
+  };
+
+  function showError() {
+    loading.classList.remove("show");
+    errText.innerHTML = "This video could not be loaded. Make sure the file exists at <code>" +
+      VIDEOS[current].src + "</code> and is an H.264/AAC MP4.";
+    errBox.classList.add("show");
+  }
+
+  function select(i, play) {
+    current = i;
+    tabs.forEach((t, k) => t.setAttribute("aria-pressed", String(k === i)));
+    nowTitle.textContent = VIDEOS[i].label;
+    nextBtn.disabled = i >= VIDEOS.length - 1;
+    errBox.classList.remove("show");
+    loading.classList.add("show");
+    // Only swap the source when it actually changes, to avoid reloading/flicker
+    if (!video.src || !video.src.endsWith(VIDEOS[i].src)) {
+      video.pause();
+      video.src = VIDEOS[i].src;
+      video.load();
+    } else {
+      video.currentTime = 0;
+    }
+    if (play) tryPlay();
+  }
+
+  video.addEventListener("canplay", () => loading.classList.remove("show"));
+  video.addEventListener("playing", () => { loading.classList.remove("show"); errBox.classList.remove("show"); });
+  video.addEventListener("waiting", () => loading.classList.add("show"));
+  video.addEventListener("error", showError);
+
+  // Auto-advance; stop at the end of the last video (no loop)
+  video.addEventListener("ended", () => {
+    if (current < VIDEOS.length - 1) select(current + 1, true);
+  });
+
+  replayBtn.addEventListener("click", () => {
+    errBox.classList.remove("show");
+    video.currentTime = 0;
+    tryPlay();
+  });
+  nextBtn.addEventListener("click", () => {
+    if (current < VIDEOS.length - 1) select(current + 1, true);
+  });
+
+  select(0, false); // Video 1 selected by default; no autoplay
+})();
+</script>
+</body>
+</html>
